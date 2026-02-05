@@ -1,126 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Will you be my Valentine?</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Will you be my Valentine?</title>
 
-  <!-- Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
-  <!-- EmailJS -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<style>
+:root{
+  --pink:#ff3b7a;
+  --blue1:#0f2027;
+  --blue2:#203a43;
+  --blue3:#2c5364;
+}
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #ffd6e7, #ffeef6);
-      font-family: system-ui, sans-serif;
-    }
+body{
+  margin:0;
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--blue1),var(--blue2),var(--blue3));
+  font-family:system-ui,sans-serif;
+  overflow:hidden;
+  padding:16px;
+  transition:background 1s ease;
+}
 
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 22px;
-      text-align: center;
-      width: min(700px, 92%);
-      box-shadow: 0 20px 60px rgba(0,0,0,.15);
-    }
+body.second-page{
+  background:linear-gradient(135deg,#141e30,#243b55);
+}
 
-    h1 {
-      font-size: 32px;
-    }
+#confettiCanvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999;
+}
 
-    .buttons {
-      margin-top: 30px;
-      position: relative;
-      height: 120px;
-    }
+.card{
+  width:min(720px,92vw);
+  padding:26px 22px;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(12px);
+  border-radius:22px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
 
-    button {
-      padding: 16px 26px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 30px;
-      border: none;
-      cursor: pointer;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-    }
+.art{
+  width:min(260px,80vw);
+  margin:0 auto 10px;
+}
 
-    #yes {
-      left: 20%;
-      background: #ff3b7a;
-      color: white;
-    }
+h1{
+  font-size:clamp(26px,4vw,44px);
+}
 
-    #no {
-      left: 60%;
-      background: #ddd;
-    }
+.button-zone{
+  position:relative;
+  width:min(520px,92%);
+  height:150px;
+  margin:0 auto;
+}
 
-    .result {
-      display: none;
-      margin-top: 20px;
-      font-size: 28px;
-    }
-  </style>
+button{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  padding:16px 24px;
+  font-size:18px;
+  font-weight:800;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  transition:transform .15s ease;
+}
+
+#yesBtn{left:18%;background:var(--pink);color:#fff;}
+#noBtn{left:62%;background:#e5e7eb;}
+
+.hint{font-size:13px;opacity:.7;margin-top:10px;}
+
+.result,#surprise,#thanks{
+  display:none;
+  margin-top:20px;
+  animation:pop .4s ease;
+}
+
+#thanks{
+  font-size:clamp(20px,3vw,28px);
+  line-height:1.4;
+  font-weight:600;
+  color:#203a43;
+}
+
+@keyframes pop{
+  from{opacity:0;transform:scale(.96);}
+  to{opacity:1;transform:scale(1);}
+}
+</style>
 </head>
 
 <body>
+<canvas id="confettiCanvas"></canvas>
 
-<div class="card">
-  <h1> Adawti , will you be my Valentine? 💖</h1>
+<main class="card">
 
-  <div class="buttons" id="zone">
-    <button id="yes">Yes</button>
-    <button id="no">No</button>
-  </div>
+<svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fur" x1="0" x2="1">
+      <stop offset="0" stop-color="#f7c7a1"/>
+      <stop offset="1" stop-color="#f2a97b"/>
+    </linearGradient>
+    <linearGradient id="heart" x1="0" x2="1">
+      <stop offset="0" stop-color="#ff4d7d"/>
+      <stop offset="1" stop-color="#ff1f68"/>
+    </linearGradient>
+  </defs>
+  <path d="M250 50 C250 33 270 25 282 38
+  C294 25 314 33 314 50
+  C314 78 282 92 282 106
+  C282 92 250 78 250 50Z" fill="url(#heart)"/>
+  <path d="M90 120 C90 70 140 40 190 60
+  C240 40 290 70 290 120
+  C290 180 240 210 190 210
+  C140 210 90 180 90 120Z" fill="url(#fur)"/>
+  <circle cx="160" cy="130" r="8"/>
+  <circle cx="220" cy="130" r="8"/>
+</svg>
 
-  <div class="result" id="result">
-    YAY!!! 🎉💘
-  </div>
-</div>
+<h1 id="question">Adwaitha (Dipti), will you be my Valentine? 💖</h1>
+
+<section class="button-zone" id="zone">
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</section>
+
+<div class="hint" id="hint">“No” seems a bit shy 😈</div>
+
+<section class="result" id="result">
+  <h2>YAY! 🎉💖</h2>
+</section>
+
+<!-- ⭐ SECOND PAGE MESSAGE -->
+<section id="thanks">
+  Thank you for choosing me AdwaithaJi (DiptiJi) 💙<br/>
+  May God bless you with your true love ✨
+</section>
+
+<section id="surprise">
+  <img src="him.gif" style="width:100%;border-radius:16px;">
+</section>
+
+</main>
 
 <script>
-  // 🔐 INIT EMAILJS
-  emailjs.init("YOUR_PUBLIC_KEY"); // ← replace
+emailjs.init("cqTlH6QcvM3PjoWms");
 
-  const yesBtn = document.getElementById("yes");
-  const noBtn = document.getElementById("no");
-  const zone = document.getElementById("zone");
-  const result = document.getElementById("result");
+const confettiCanvas=document.getElementById("confettiCanvas");
+const confettiInstance=confetti.create(confettiCanvas,{resize:true});
+function fireConfetti(){
+  confettiInstance({particleCount:300,spread:140,origin:{x:.5,y:.5}});
+}
 
-  noBtn.addEventListener("mouseover", () => {
-    noBtn.style.left = Math.random() * 70 + "%";
-  });
+const zone=document.getElementById("zone");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const result=document.getElementById("result");
+const hint=document.getElementById("hint");
+const surprise=document.getElementById("surprise");
+const thanks=document.getElementById("thanks");
+const question=document.getElementById("question");
 
-  yesBtn.addEventListener("click", () => {
-    zone.style.display = "none";
-    result.style.display = "block";
+let yesScale=1;
+function growYes(){
+  yesScale=Math.min(2.3,yesScale+0.12);
+  yesBtn.style.transform=`translateY(-50%) scale(${yesScale})`;
+}
 
-    confetti({
-      particleCount: 250,
-      spread: 120
-    });
+zone.addEventListener("pointermove",()=>{
+  noBtn.style.left=Math.random()*70+"%";
+  growYes();
+});
 
-    // 📧 SEND EMAIL AUTOMATICALLY
-    emailjs.send(
-      "service_1hwf8bs",   // ← replace
-      "valentine_template",
-      {
-        girl_name: "Adwaitha (Dipti)",
-        message: "She accepted your Valentine proposal 💕"
-      }
-    ).then(
-      () => console.log("Email sent successfully ❤️"),
-      (error) => console.error("Email failed", error)
-    );
-  });
+yesBtn.addEventListener("click",()=>{
+  zone.style.display="none";
+  hint.style.display="none";
+  question.style.display="none";
+
+  result.style.display="block";
+  thanks.style.display="block";
+  surprise.style.display="block";
+
+  document.body.classList.add("second-page");
+  fireConfetti();
+
+  emailjs.send(
+    "service_1hwf8bs",
+    "template_1vmz74p",
+    {
+      girl_name:"Adwaitha (Dipti)",
+      message:"She clicked YES 💕",
+      send_at:"2026-02-14 11:30"
+    }
+  );
+});
 </script>
 
 </body>
